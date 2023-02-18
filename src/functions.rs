@@ -31,6 +31,13 @@ pub(crate) fn dichotomy(a :f64, b :f64, precision :f64) -> (f64, i8) {
     }
 }
 
+/*dichotomy method*/
+pub(crate) fn secant_method(a :f64, b :f64, precision :f64) -> (f64, i8) {
+    let mut start = a;
+    let mut end = b;
+    let mut iteration :i8 = 0;
+
+}
 
 /* f(x) = 𝑥^2 𝑐𝑜𝑠2𝑥 + 1 */
 fn function_x(x :f64) -> f64 {
