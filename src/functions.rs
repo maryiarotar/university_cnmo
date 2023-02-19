@@ -1,7 +1,6 @@
 use std::io;
 use std::io::Write;
 use std::time::{Instant};
-//use num_traits::AsPrimitive;
 
 /*dichotomy method*/
 pub(crate) fn dichotomy(a :f64, b :f64, precision :f64) -> (f64, i8) {
@@ -90,6 +89,37 @@ pub(crate) fn newton(a :f64, b :f64, precision :f64) -> (f64, i8) {
     }
 }
 
+//iteration_method
+pub(crate) fn iteration_method(a :f64, b :f64, precision :f64) -> (f64, i8) {
+    //x = √( -1/cos2x )
+    //let f_x :f64 = sqrt(-1/(2.0*x).cos());
+    let mut iteration: i8 = 0;
+
+  //  let max = if proizv_1(a) > proizv_1(b) { proizv_1(a) } else { proizv_1(b) };
+
+    let max = if proizv_1(a).abs() > proizv_1(b).abs() { proizv_1(a).abs() } else { proizv_1(b).abs() };
+
+    let mut x_cur = if function_x(a)*proizv_2(a) > 0.0 {a}
+        else {if function_x(b)*proizv_2(b) > 0.0 {b} else {0.0}};
+
+    let mut x_next :f64 = 0.0;
+    
+    loop {
+    if proizv_1(x_cur) > 0.0 {
+        x_next = x_cur - function_x(x_cur)*(1.0/max);
+    }
+    if proizv_1(x_cur) < 0.0 {
+        x_next = x_cur - (function_x(x_cur)*-1.0)*(1.0/max);
+    }
+
+    if (x_next - x_cur).abs() <= precision {
+        return (x_next, iteration);
+    }
+    x_cur = x_next;
+    iteration += 1;
+    }
+
+}
 
 
 /* f(x) = 𝑥^2 𝑐𝑜𝑠2𝑥 + 1 */
@@ -130,6 +160,8 @@ pub(crate) fn in_and_parse_number() -> f64 {
         return temp;
     }
 }
+
+
 
 pub(crate) fn how_long_to_count(f :fn(f64, f64, f64) -> (f64, i8),
                      a :f64, b :f64, pr :f64) {

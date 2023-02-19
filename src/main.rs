@@ -2,8 +2,7 @@ extern crate approx;
 extern crate num_traits;
 
 mod functions;
-use functions::{in_and_parse_number, dichotomy, how_long_to_count, secant_method,
-    newton};
+use functions::{in_and_parse_number, dichotomy, secant_method, newton, iteration_method};
 
 fn main() {
 
@@ -22,6 +21,8 @@ fn main() {
     let d :(f64, i8) = newton(a, b, e );
     println!("Корень: {},метод Ньютона_ итераций: {}", d.0, d.1);
 
+    let d :(f64, i8) = iteration_method(a, b, e );
+    println!("Корень: {},метод итераций_ итераций: {}", d.0, d.1);
 
 
 
