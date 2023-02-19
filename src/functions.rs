@@ -31,18 +31,54 @@ pub(crate) fn dichotomy(a :f64, b :f64, precision :f64) -> (f64, i8) {
     }
 }
 
-/*dichotomy method*/
+/*secand method*/
 pub(crate) fn secant_method(a :f64, b :f64, precision :f64) -> (f64, i8) {
-    let mut start = a;
-    let mut end = b;
     let mut iteration :i8 = 0;
+    let func_a = function_x(a);
 
+    if func_a * proizv_2(a) > 0.0 {
+        let mut x_cur :f64 = b;
+        loop {
+            let func_x_cur = function_x(x_cur);
+            let x_next = x_cur - ((x_cur - a) * func_x_cur)
+                / (func_x_cur - func_a);
+
+            if ((x_next - x_cur).abs() <= precision) &&
+                (function_x(x_next).abs() <= precision) {
+                return (x_next, iteration);
+            }
+            x_cur = x_next;
+            iteration += 1;
+        }
+
+    } else {
+        let func_b = function_x(b);
+        let mut x_cur :f64 = a;
+        loop {
+            let func_x_cur = function_x(x_cur);
+            let x_next = x_cur - ((b - x_cur) * func_x_cur)
+                / (func_b - func_x_cur);
+
+            if ((x_next - x_cur).abs() <= precision) &&
+                (function_x(x_next).abs() <= precision) {
+                return (x_next, iteration);
+            }
+            x_cur = x_next;
+            iteration += 1;
+        }
+    }
 }
 
 /* f(x) = 𝑥^2 𝑐𝑜𝑠2𝑥 + 1 */
 fn function_x(x :f64) -> f64 {
-    let func_x :f64 = x.sqrt() * (2.0*x).cos() + 1.0;
+    let func_x :f64 = (x*x) * (2.0*x).cos() + 1.0;
     func_x
+}
+
+fn proizv_2(x :f64) -> f64 {
+    let proizv_2 :f64 = -4.0*(x*x)*((2.0*x).cos())
+        - 8.0*x*((2.0*x).sin()) + 2.0*((2.0*x).cos());
+    proizv_2
 }
 
 /*function to enter a number*/

@@ -2,7 +2,7 @@ extern crate approx;
 extern crate num_traits;
 
 mod functions;
-use functions::{in_and_parse_number, dichotomy, how_long_to_count};
+use functions::{in_and_parse_number, dichotomy, how_long_to_count, secant_method};
 
 fn main() {
 
@@ -15,8 +15,8 @@ fn main() {
     let d :(f64, i8) = dichotomy(a, b, e );
     println!("метод дихотомии. Корень: {}, итераций: {}", d.0, d.1);
 
-
-
+    let d :(f64, i8) = secant_method(a, b, e );
+    println!("метод хорд. Корень: {}, итераций: {}", d.0, d.1);
 
     how_long_to_count(dichotomy, a, b, e);
 
