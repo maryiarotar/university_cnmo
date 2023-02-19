@@ -69,10 +69,38 @@ pub(crate) fn secant_method(a :f64, b :f64, precision :f64) -> (f64, i8) {
     }
 }
 
+//Newton's_method
+pub(crate) fn newton(a :f64, b :f64, precision :f64) -> (f64, i8) {
+    let mut iteration :i8 = 0;
+
+    let mut x_cur = if function_x(a)*proizv_2(a) > 0.0 {a}
+        else {if function_x(b)*proizv_2(b) > 0.0 {b} else {0.0}};
+
+    if x_cur == 0.0 {println!("Choose another [a, b]!"); return (0f64, 0i8);}
+
+    loop {
+        let x_next :f64 = x_cur - function_x(x_cur)/proizv_1(x_cur);
+
+        if ((x_next - x_cur).abs() <= precision) &&
+                (function_x(x_next).abs() <= precision) {
+                return (x_next, iteration);
+        }
+        x_cur = x_next;
+        iteration += 1;
+    }
+}
+
+
+
 /* f(x) = 𝑥^2 𝑐𝑜𝑠2𝑥 + 1 */
 fn function_x(x :f64) -> f64 {
     let func_x :f64 = (x*x) * (2.0*x).cos() + 1.0;
     func_x
+}
+
+fn proizv_1(x :f64) -> f64 {
+    let proizv_1 :f64 = -2.0*(x*x)*(2.0*x).sin() + 2.0*x*(2.0*x).cos();
+    proizv_1
 }
 
 fn proizv_2(x :f64) -> f64 {
