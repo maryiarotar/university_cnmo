@@ -8,6 +8,8 @@ pub(crate) fn dichotomy(a :f64, b :f64, precision :f64) -> (f64, i8) {
     let mut end = b;
     let mut iteration :i8 = 0;
 
+//    println!("МЕТОД ДИХОТОМИИ");
+
     loop {
         let middle = (start + end) / 2.0;
         let func_a = function_x(start);
@@ -27,6 +29,7 @@ pub(crate) fn dichotomy(a :f64, b :f64, precision :f64) -> (f64, i8) {
         if (end - start) <= precision {
             return ((start + end) / 2.0, iteration);
         }
+//        println!("Корень: {}, _ итераций: {} __ f(x)={}", (start + end) / 2.0, iteration, function_x((start + end) / 2.0));
     }
 }
 
@@ -35,35 +38,40 @@ pub(crate) fn secant_method(a :f64, b :f64, precision :f64) -> (f64, i8) {
     let mut iteration :i8 = 0;
     let func_a = function_x(a);
 
+    let min1 = if proizv_1(a).abs() < proizv_1(b).abs() {proizv_1(a).abs()} else {proizv_1(a).abs()};
+    let max1 = if proizv_1(a).abs() > proizv_1(b).abs() {proizv_1(a).abs()} else {proizv_1(a).abs()};
+
+//    println!("MAX1: {},   _ MIN1: {}", max1, min1);
+
     if func_a * proizv_2(a) > 0.0 {
         let mut x_cur :f64 = b;
         loop {
+//            println!("Корень: {}, _ итераций: {} __ f(x)={}", x_cur, iteration, function_x(x_cur));
+            iteration += 1;
             let func_x_cur = function_x(x_cur);
             let x_next = x_cur - ((x_cur - a) * func_x_cur)
                 / (func_x_cur - func_a);
-
-            if ((x_next - x_cur).abs() <= precision) &&
+            if ((x_next - x_cur).abs() <= (precision*min1)/(max1-min1)) &&
                 (function_x(x_next).abs() <= precision) {
                 return (x_next, iteration);
             }
             x_cur = x_next;
-            iteration += 1;
         }
 
-    } else {
+    } else { //if f(a)*f"(a)<0
         let func_b = function_x(b);
         let mut x_cur :f64 = a;
         loop {
+//            println!("Корень: {}, _ итераций: {} __ f(x)={}", x_cur, iteration, function_x(x_cur));
+            iteration += 1;
             let func_x_cur = function_x(x_cur);
             let x_next = x_cur - ((b - x_cur) * func_x_cur)
                 / (func_b - func_x_cur);
-
-            if ((x_next - x_cur).abs() <= precision) &&
+            if ((x_next - x_cur).abs() <= (precision*min1)/(max1-min1)) &&
                 (function_x(x_next).abs() <= precision) {
                 return (x_next, iteration);
             }
             x_cur = x_next;
-            iteration += 1;
         }
     }
 }
@@ -77,25 +85,32 @@ pub(crate) fn newton(a :f64, b :f64, precision :f64) -> (f64, i8) {
 
     if x_cur == 0.0 {println!("Choose another [a, b]!"); return (0f64, 0i8);}
 
+    let max2 = if proizv_2(a).abs() > proizv_2(b).abs() {proizv_2(a).abs()} else {proizv_2(a).abs()};
+    let min1 = if proizv_1(a).abs() < proizv_1(b).abs() {proizv_1(a).abs()} else {proizv_1(a).abs()};
+
     loop {
+//        println!("Корень: {}, _ итераций: {} __ f(x)={}", x_cur, iteration, function_x(x_cur));
+        iteration += 1;
         let x_next :f64 = x_cur - function_x(x_cur)/proizv_1(x_cur);
 
-        if ((x_next - x_cur).abs() <= precision) &&
-                (function_x(x_next).abs() <= precision) {
+         if (max2/(2.0*min1))*((x_next - x_cur)*(x_next - x_cur)) <= precision {
                 return (x_next, iteration);
         }
+
         x_cur = x_next;
-        iteration += 1;
     }
 }
 
 //iteration_method
 pub(crate) fn iteration_method(a :f64, b :f64, precision :f64) -> (f64, i8) {
-    //x = √( -1/cos2x )
-    //let f_x :f64 = sqrt(-1/(2.0*x).cos());
-    let mut iteration: i8 = 0;
 
-  //  let max = if proizv_1(a) > proizv_1(b) { proizv_1(a) } else { proizv_1(b) };
+    let mut iteration: i8 = 0;
+    // q = 1-(m1/M1)
+    let min1 = if proizv_1(a).abs() < proizv_1(b).abs() {proizv_1(a).abs()} else {proizv_1(b).abs()};
+    let max1 = if proizv_1(a).abs() > proizv_1(b).abs() {proizv_1(a).abs()} else {proizv_1(b).abs()};
+    let q = 1.0 - (min1/max1);
+ //   println!("min1: {}, _ max1: {}", min1, max1);
+ //   println!("(1-min1/max1) < 1 ____  = {} < 1", 1.0-(min1/max1));
 
     let max = if proizv_1(a).abs() > proizv_1(b).abs() { proizv_1(a).abs() } else { proizv_1(b).abs() };
 
@@ -105,22 +120,22 @@ pub(crate) fn iteration_method(a :f64, b :f64, precision :f64) -> (f64, i8) {
     let mut x_next :f64 = 0.0;
     
     loop {
-    if proizv_1(x_cur) > 0.0 {
-        x_next = x_cur - function_x(x_cur)*(1.0/max);
-    }
-    if proizv_1(x_cur) < 0.0 {
-        x_next = x_cur - (function_x(x_cur)*-1.0)*(1.0/max);
-    }
+ //       println!("Корень: {}, _ итераций: {} __ f(x)={}", x_cur, iteration, function_x(x_cur));
+        iteration += 1;
+        if proizv_1(x_cur) > 0.0 {
+            x_next = x_cur - function_x(x_cur)*(1.0/max);
+        }
+        if proizv_1(x_cur) < 0.0 {
+            x_next = x_cur - (function_x(x_cur)*-1.0)*(1.0/max);
+        }
 
-    if (x_next - x_cur).abs() <= precision {
-        return (x_next, iteration);
-    }
-    x_cur = x_next;
-    iteration += 1;
+        if ((x_next - x_cur).abs()*(q/(1.0-q))) < precision{
+            return (x_next, iteration);
+        }
+        x_cur = x_next;
     }
 
 }
-
 
 /* f(x) = 𝑥^2 𝑐𝑜𝑠2𝑥 + 1 */
 fn function_x(x :f64) -> f64 {
@@ -138,6 +153,7 @@ fn proizv_2(x :f64) -> f64 {
         - 8.0*x*((2.0*x).sin()) + 2.0*((2.0*x).cos());
     proizv_2
 }
+
 
 /*function to enter a number*/
 pub(crate) fn in_and_parse_number() -> f64 {
