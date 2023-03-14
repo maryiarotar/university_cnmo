@@ -1,3 +1,4 @@
+
 use std::io;
 use std::io::Write;
 use std::time::{Instant};
@@ -154,29 +155,27 @@ fn proizv_2(x :f64) -> f64 {
     proizv_2
 }
 
+        /*function to enter a number*/
 
-/*function to enter a number*/
-pub(crate) fn in_and_parse_number() -> f64 {
+pub fn in_and_parse_number() -> f64 {
+            let mut temp = String::new();
+            loop {
+                temp.clear();
+                print!("enter a number: ---> ");
+                io::stdout().flush().expect("an error..");
 
-    let mut temp = String::new();
-    loop {
+                io::stdin()
+                    .read_line(&mut temp)
+                    .expect("an stdin error!");
 
-        temp.clear();
-        print!("enter a number: ---> ");
-        io::stdout().flush().expect("an error..");
-
-        io::stdin()
-            .read_line(&mut temp)
-            .expect("an stdin error!");
-
-        let temp :f64 = match temp.trim().parse() {
-            Ok(num) => num,
-            Err(_) => continue,
-        };
-        return temp;
-    }
+                let temp: f64 = match temp.trim().parse() {
+                    Ok(num) => num,
+                    Err(_) => continue,
+                };
+                io::stdout().flush().expect("an error..");
+                return temp;
+            }
 }
-
 
 
 pub(crate) fn how_long_to_count(f :fn(f64, f64, f64) -> (f64, i8),
@@ -186,3 +185,4 @@ pub(crate) fn how_long_to_count(f :fn(f64, f64, f64) -> (f64, i8),
     let end = start.elapsed();
     println!("performance = {} seconds ({} nanosecs) ", end.as_secs_f64(), end.as_nanos());
 }
+
